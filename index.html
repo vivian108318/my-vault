@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>私密隨身誌 - 進階密碼金庫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --morandi-beige: #f2e9e4;
+            --morandi-dust: #c9ada7;
+            --morandi-taupe: #9a8c98;
+            --morandi-dark: #4a4e69;
+            --morandi-clay: #22223b;
+        }
+
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--morandi-beige);
+            color: var(--morandi-clay);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .serif { font-family: 'Noto Serif TC', serif; }
+
+        .tab-main-active {
+            background-color: var(--morandi-taupe);
+            color: white;
+            box-shadow: 0 4px 12px rgba(154, 140, 152, 0.4);
+        }
+
+        .tab-sub-active {
+            background-color: var(--morandi-dust);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(201, 173, 167, 0.3);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 30px -10px rgba(74, 78, 105, 0.12);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        input, select, textarea { 
+            font-size: 16px !important; 
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            border: 1px solid rgba(154, 140, 152, 0.15) !important;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--morandi-taupe) !important;
+            background-color: white !important;
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="pb-32 min-h-screen">
+
+    <header class="px-6 py-12 text-center">
+        <h1 class="serif text-3xl font-bold tracking-[0.25em] text-gray-700">私 密 隨 身 誌</h1>
+        <p class="text-[10px] uppercase tracking-[0.4em] text-gray-400 mt-3 font-light">Advanced Secure Archive</p>
+    </header>
+
+    <main class="max-w-xl mx-auto px-6">
+        
+        <div class="flex flex-col gap-6 mb-8">
+            <div class="flex justify-between items-center">
+                <div class="flex gap-3">
+                    <button onclick="exportJSON()" class="w-10 h-10 rounded-full bg-white/60 flex items-center justify-center text-gray-400 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </button>
+                    <button onclick="document.getElementById('fileIn').click()" class="w-10 h-10 rounded-full bg-white/60 flex items-center justify-center text-gray-400 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    </button>
+                    <input type="file" id="fileIn" class="hidden" accept=".json" onchange="importJSON(event)">
+                </div>
+                <div class="relative flex-1 ml-4">
+                    <input type="text" id="searchInput" oninput="render()" placeholder="搜尋紀錄..." class="w-full pl-10 pr-4 py-3 rounded-full text-xs shadow-inner border-none ring-0">
+                    <span class="absolute left-4 top-3.5 text-gray-300">🔍</span>
+                </div>
+            </div>
+
+            <div class="flex p-1 bg-white/40 rounded-full no-scrollbar border border-white/40">
+                <button onclick="setFilter('all', 'parent')" id="m-all" class="tab-main-active flex-1 py-2.5 rounded-full text-xs font-bold">全部</button>
+                <button onclick="setFilter('個人', 'parent')" id="m-個人" class="flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400">個人</button>
+                <button onclick="setFilter('工作', 'parent')" id="m-工作" class="flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400">工作</button>
+                <button onclick="setFilter('家人', 'parent')" id="m-家人" class="flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400">家人</button>
+            </div>
+
+            <div id="subFilterBar" class="flex gap-2 overflow-x-auto no-scrollbar min-h-[32px]"></div>
+        </div>
+
+        <div id="passwordList" class="space-y-6"></div>
+        <div id="emptyState" class="hidden py-24 text-center text-gray-400 serif italic text-sm">目前沒有相關紀錄</div>
+    </main>
+
+    <button onclick="openModal()" class="fixed bottom-10 right-8 w-14 h-14 bg-[#22223b] text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 active:scale-95">＋</button>
+
+    <div id="modal" class="fixed inset-0 bg-slate-900/40 z-50 hidden items-end sm:items-center justify-center backdrop-blur-md">
+        <div class="bg-white w-full max-w-md rounded-t-[3rem] sm:rounded-[2.5rem] p-10 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-8">
+                <h2 id="modalTitle" class="serif text-xl font-bold text-gray-600">記下一筆祕密</h2>
+                <button onclick="closeModal()" class="text-gray-300 text-4xl font-light">&times;</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="fParent" onchange="updateSubOptions()" class="w-full p-4 rounded-2xl text-xs font-bold text-gray-500 border-none outline-none ring-0">
+                        <option value="個人">個人</option>
+                        <option value="工作">工作</option>
+                        <option value="家人">家人</option>
+                    </select>
+                    <select id="fSub" class="w-full p-4 rounded-2xl text-xs font-bold text-gray-500 border-none outline-none ring-0"></select>
+                </div>
+                <input type="text" id="fSite" placeholder="服務名稱" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
+                <input type="url" id="fUrl" placeholder="登入網址 (https://...)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
+                <input type="text" id="fUser" placeholder="帳號" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
+                <input type="text" id="fPass" placeholder="密碼" class="w-full p-4 rounded-2xl text-sm font-mono border-none shadow-sm">
+                <textarea id="fNote" placeholder="備註..." class="w-full p-4 rounded-2xl text-sm border-none h-24 resize-none shadow-sm"></textarea>
+                
+                <button onclick="saveEntry()" class="w-full bg-[#22223b] text-white py-4 rounded-2xl font-bold text-sm tracking-widest mt-6 shadow-xl active:scale-95">儲存紀錄</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-0 transition-all duration-500 z-[100] text-[10px] tracking-widest pointer-events-none uppercase">Success</div>
+
+    <script>
+        const categories = {
+            '個人': ['遊戲', '社群', '工具', '購物', '金融'],
+            '工作': ['公司系統', '伺服器', '公務用', '客戶'],
+            '家人': ['媽媽', '琦琦', '公公', '婆婆', '其他']
+        };
+
+        let entries = JSON.parse(localStorage.getItem('vault_pro_db_final') || '[]');
+        let editingId = null;
+        let currentParentFilter = 'all';
+        let currentSubFilter = 'all';
+
+        function updateSubOptions() {
+            const parent = document.getElementById('fParent').value;
+            const subSelect = document.getElementById('fSub');
+            subSelect.innerHTML = categories[parent].map(sub => `<option value="${sub}">${sub}</option>`).join('');
+        }
+
+        function setFilter(value, type) {
+            if (type === 'parent') {
+                currentParentFilter = value;
+                currentSubFilter = 'all';
+                document.querySelectorAll('[id^="m-"]').forEach(el => {
+                    el.className = "flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400 transition-all duration-300";
+                });
+                document.getElementById('m-' + value).className = "tab-main-active flex-1 py-2.5 rounded-full text-xs font-bold transition-all duration-300";
+            } else {
+                currentSubFilter = value;
+            }
+            renderSubFilterBar();
+            render();
+        }
+
+        function renderSubFilterBar() {
+            const bar = document.getElementById('subFilterBar');
+            if (currentParentFilter === 'all') {
+                bar.innerHTML = '';
+                return;
+            }
+            let html = `<button onclick="setFilter('all', 'sub')" class="px-5 py-1.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${currentSubFilter === 'all' ? 'tab-sub-active' : 'text-gray-400 bg-white/30'}">全部</button>`;
+            categories[currentParentFilter].forEach(s => {
+                html += `<button onclick="setFilter('${s}', 'sub')" class="px-5 py-1.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${currentSubFilter === s ? 'tab-sub-active' : 'text-gray-400 bg-white/30'}">${s}</button>`;
+            });
+            bar.innerHTML = html;
+        }
+
+        function render() {
+            const list = document.getElementById('passwordList');
+            const empty = document.getElementById('emptyState');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            list.innerHTML = '';
+
+            const filtered = entries.filter(e => {
+                const matchSearch = e.site.toLowerCase().includes(search) || e.user.toLowerCase().includes(search) || (e.note && e.note.toLowerCase().includes(search));
+                const matchParent = currentParentFilter === 'all' || e.parent === currentParentFilter;
+                const matchSub = currentSubFilter === 'all' || e.sub === currentSubFilter;
+                return matchSearch && matchParent && matchSub;
+            });
+
+            if (filtered.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            filtered.sort((a,b) => b.id - a.id).forEach(e => {
+                const card = document.createElement('div');
+                card.className = "fade-in bg-white/90 p-7 rounded-[2.5rem] card-shadow border border-white space-y-5";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-gray-50 pb-4">
+                        <div>
+                            <div class="flex gap-2 mb-2">
+                                <span class="text-[8px] font-bold text-white bg-[#9a8c98] px-2 py-0.5 rounded-full">${e.parent}</span>
+                                <span class="text-[8px] font-bold text-gray-400 bg-gray-100/50 px-2 py-0.5 rounded-full">${e.sub}</span>
+                            </div>
+                            <h3 class="serif text-xl font-bold text-gray-700">${e.site}</h3>
+                        </div>
+                        <div class="flex gap-3">
+                            ${e.url ? `<button onclick="window.open('${e.url}')" class="text-gray-300">🌐</button>` : ''}
+                            <button onclick="editEntry('${e.id}')" class="text-gray-300">✏️</button>
+                            <button onclick="deleteEntry('${e.id}')" class="text-gray-200">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div onclick="copyText('${e.user}')" class="bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer">
+                            <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic">User</span>
+                            <span class="text-sm font-medium text-gray-600">${e.user}</span>
+                        </div>
+                        <div onclick="copyText('${e.pass}')" class="bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer">
+                            <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic">Pass</span>
+                            <span class="text-sm font-mono text-gray-300 tracking-[0.3em]">••••••••</span>
+                        </div>
+                        ${e.note ? `<div class="mt-4 p-4 rounded-xl italic text-xs text-gray-400 border-l-2 border-[#c9ada7] bg-white/50">${e.note.replace(/\n/g, '<br>')}</div>` : ''}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+            updateSubOptions();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            editingId = null;
+            document.getElementById('modalTitle').innerText = '記下一筆祕密';
+            ['fSite','fUrl','fUser','fPass','fNote'].forEach(id => document.getElementById(id).value = '');
+        }
+
+        function saveEntry() {
+            const data = {
+                id: editingId || Date.now().toString(),
+                parent: document.getElementById('fParent').value,
+                sub: document.getElementById('fSub').value,
+                site: document.getElementById('fSite').value.trim(),
+                url: document.getElementById('fUrl').value.trim(),
+                user: document.getElementById('fUser').value.trim(),
+                pass: document.getElementById('fPass').value.trim(),
+                note: document.getElementById('fNote').value.trim()
+            };
+
+            if (!data.site || !data.user || !data.pass) return showToast('請填寫必填欄位');
+
+            if (editingId) {
+                const idx = entries.findIndex(e => String(e.id) === String(editingId));
+                entries[idx] = data;
+            } else {
+                entries.push(data);
+            }
+
+            localStorage.setItem('vault_pro_db_final', JSON.stringify(entries));
+            closeModal();
+            render();
+            showToast('存檔成功');
+        }
+
+        function editEntry(id) {
+            const e = entries.find(x => String(x.id) === String(id));
+            if (!e) return;
+            editingId = String(id);
+            document.getElementById('fParent').value = e.parent;
+            updateSubOptions();
+            document.getElementById('fSub').value = e.sub;
+            document.getElementById('fSite').value = e.site;
+            document.getElementById('fUrl').value = e.url || '';
+            document.getElementById('fUser').value = e.user;
+            document.getElementById('fPass').value = e.pass;
+            document.getElementById('fNote').value = e.note || '';
+            document.getElementById('modalTitle').innerText = '修改紀錄';
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function deleteEntry(id) {
+            if (confirm('確定刪除？')) {
+                // 使用 String 強制轉換確保比對正確
+                entries = entries.filter(x => String(x.id) !== String(id));
+                localStorage.setItem('vault_pro_db_final', JSON.stringify(entries));
+                render();
+                showToast('已刪除');
+            }
+        }
+
+        function copyText(text) {
+            const el = document.createElement('textarea');
+            el.value = text; document.body.appendChild(el);
+            el.select(); document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast('已複製');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-100 transition-all duration-500 z-[100] text-[10px] tracking-widest uppercase";
+            setTimeout(() => t.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-0 transition-all duration-500 z-[100] text-[10px] tracking-widest uppercase", 2000);
+        }
+
+        function exportJSON() {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(entries, null, 2)], {type: "application/json"}));
+            a.download = `vault_backup.json`; a.click();
+        }
+
+        function importJSON(e) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                entries = JSON.parse(ev.target.result);
+                localStorage.setItem('vault_pro_db_final', JSON.stringify(entries));
+                render();
+            };
+            reader.readAsText(e.target.files[0]);
+        }
+
+        renderSubFilterBar();
+        render();
+    </script>
+</body>
+</html>
