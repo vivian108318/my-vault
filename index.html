@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="密碼金庫">
     <meta name="theme-color" content="#f2e9e4">
     
-    <!-- Apple Touch Icon (使用 Base64 內嵌一個莫蘭迪色系的鎖頭圖標，解決縮圖醜的問題) -->
+    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+CiAgPHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIzNiIgZmlsbD0iI2YyZTllNCIvPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQwLCA0MCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzRhNGU2OSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgPHJlY3QgeD0iMTAiIHk9IjQ1IiB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHJ4PSI4Ii8+CiAgICA8cGF0aCBkPSJNMzAgNDVWMzBhMjAgMjAgMCAwIDEgNDAgMHYxNSIvPgogICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI3NSIgcj0iNSIvPgogIDwvZz4KPC9zdmc+">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,7 +31,6 @@
             background-color: var(--morandi-beige);
             color: var(--morandi-clay);
             -webkit-tap-highlight-color: transparent;
-            /* 防止主畫面下拉重新整理的視覺干擾 */
             overscroll-behavior-y: contain;
         }
 
@@ -76,6 +75,15 @@
         }
 
         .btn-hover:active { transform: scale(0.95); transition: transform 0.1s; }
+        
+        /* 自定義下拉選單樣式 */
+        .sort-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a8c98' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1em;
+        }
     </style>
 </head>
 <body class="pb-32 min-h-screen">
@@ -89,7 +97,7 @@
         
         <div class="flex flex-col gap-6 mb-8">
             <!-- 工具列 -->
-            <div class="flex justify-between items-center">
+            <div class="flex flex-wrap justify-between items-center gap-4">
                 <div class="flex gap-3">
                     <button onclick="exportJSON()" class="w-10 h-10 rounded-full bg-white/60 flex items-center justify-center text-gray-500 shadow-sm btn-hover" title="導出備份">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -99,14 +107,27 @@
                     </button>
                     <input type="file" id="fileIn" class="hidden" accept=".json" onchange="importJSON(event)">
                 </div>
-                <div class="relative flex-1 ml-4">
-                    <input type="text" id="searchInput" oninput="render()" placeholder="搜尋紀錄..." class="w-full pl-10 pr-4 py-3 rounded-full text-xs shadow-inner border-none ring-0">
-                    <span class="absolute left-4 top-4 text-gray-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </span>
+
+                <!-- 排序選擇器 -->
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+                    <select id="sortOrder" onchange="render()" class="sort-select bg-white/60 border-none rounded-full py-1.5 pl-4 pr-8 text-[10px] font-bold text-gray-500 shadow-sm outline-none cursor-pointer">
+                        <option value="newest">最新優先</option>
+                        <option value="oldest">最舊優先</option>
+                        <option value="alpha">標題 A-Z</option>
+                    </select>
                 </div>
             </div>
 
+            <!-- 搜尋框 -->
+            <div class="relative w-full">
+                <input type="text" id="searchInput" oninput="render()" placeholder="搜尋紀錄..." class="w-full pl-10 pr-4 py-3 rounded-full text-xs shadow-inner border-none ring-0">
+                <span class="absolute left-4 top-3 text-gray-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+            </div>
+
+            <!-- 主分類篩選 -->
             <div class="flex p-1 bg-white/40 rounded-full no-scrollbar border border-white/40">
                 <button onclick="setFilter('all', 'parent')" id="m-all" class="tab-main-active flex-1 py-2.5 rounded-full text-xs font-bold transition-all">全部</button>
                 <button onclick="setFilter('個人', 'parent')" id="m-個人" class="flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400 transition-all">個人</button>
@@ -114,6 +135,7 @@
                 <button onclick="setFilter('家人', 'parent')" id="m-家人" class="flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400 transition-all">家人</button>
             </div>
 
+            <!-- 子分類篩選 (動態生成) -->
             <div id="subFilterBar" class="flex gap-2 overflow-x-auto no-scrollbar min-h-[32px]"></div>
         </div>
 
@@ -121,10 +143,12 @@
         <div id="emptyState" class="hidden py-24 text-center text-gray-400 serif italic text-sm">目前沒有相關紀錄</div>
     </main>
 
+    <!-- 新增按鈕 -->
     <button onclick="openModal()" class="fixed bottom-10 right-8 w-14 h-14 bg-[#22223b] text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 active:scale-95 transition-transform">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
     </button>
 
+    <!-- 彈窗 -->
     <div id="modal" class="fixed inset-0 bg-slate-900/40 z-50 hidden items-end sm:items-center justify-center backdrop-blur-md">
         <div class="bg-white w-full max-w-md rounded-t-[3rem] sm:rounded-[2.5rem] p-10 shadow-2xl overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-center mb-8">
@@ -154,6 +178,7 @@
         </div>
     </div>
 
+    <!-- 吐司訊息 -->
     <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-0 transition-all duration-500 z-[100] text-[10px] tracking-widest pointer-events-none uppercase">Success</div>
 
     <script>
@@ -206,14 +231,25 @@
             const list = document.getElementById('passwordList');
             const empty = document.getElementById('emptyState');
             const search = document.getElementById('searchInput').value.toLowerCase();
+            const sortVal = document.getElementById('sortOrder').value;
+            
             list.innerHTML = '';
 
-            const filtered = entries.filter(e => {
+            let filtered = entries.filter(e => {
                 const matchSearch = e.site.toLowerCase().includes(search) || e.user.toLowerCase().includes(search) || (e.note && e.note.toLowerCase().includes(search));
                 const matchParent = currentParentFilter === 'all' || e.parent === currentParentFilter;
                 const matchSub = currentSubFilter === 'all' || e.sub === currentSubFilter;
                 return matchSearch && matchParent && matchSub;
             });
+
+            // 執行排序
+            if (sortVal === 'newest') {
+                filtered.sort((a, b) => b.id - a.id);
+            } else if (sortVal === 'oldest') {
+                filtered.sort((a, b) => a.id - b.id);
+            } else if (sortVal === 'alpha') {
+                filtered.sort((a, b) => a.site.localeCompare(b.site, 'zh-Hant'));
+            }
 
             if (filtered.length === 0) {
                 empty.classList.remove('hidden');
@@ -221,7 +257,7 @@
             }
             empty.classList.add('hidden');
 
-            filtered.sort((a,b) => b.id - a.id).forEach(e => {
+            filtered.forEach(e => {
                 const card = document.createElement('div');
                 card.className = "fade-in bg-white/90 p-7 rounded-[2.5rem] card-shadow border border-white space-y-5";
                 card.innerHTML = `
@@ -380,3 +416,4 @@
     </script>
 </body>
 </html>
+
