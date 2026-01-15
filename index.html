@@ -76,7 +76,6 @@
 
         .btn-hover:active { transform: scale(0.95); transition: transform 0.1s; }
         
-        /* 自定義下拉選單樣式 */
         .sort-select {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a8c98' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -114,7 +113,8 @@
                     <select id="sortOrder" onchange="render()" class="sort-select bg-white/60 border-none rounded-full py-1.5 pl-4 pr-8 text-[10px] font-bold text-gray-500 shadow-sm outline-none cursor-pointer">
                         <option value="newest">最新優先</option>
                         <option value="oldest">最舊優先</option>
-                        <option value="alpha">標題 A-Z</option>
+                        <option value="alpha-asc">標題 A-Z</option>
+                        <option value="alpha-desc">標題 Z-A</option>
                     </select>
                 </div>
             </div>
@@ -135,7 +135,7 @@
                 <button onclick="setFilter('家人', 'parent')" id="m-家人" class="flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400 transition-all">家人</button>
             </div>
 
-            <!-- 子分類篩選 (動態生成) -->
+            <!-- 子分類篩選 -->
             <div id="subFilterBar" class="flex gap-2 overflow-x-auto no-scrollbar min-h-[32px]"></div>
         </div>
 
@@ -192,6 +192,7 @@
         let editingId = null;
         let currentParentFilter = 'all';
         let currentSubFilter = 'all';
+        let visibilityState = {};
 
         function updateSubOptions() {
             const parent = document.getElementById('fParent').value;
@@ -227,6 +228,25 @@
             bar.innerHTML = html;
         }
 
+        function togglePassword(id) {
+            visibilityState[id] = !visibilityState[id];
+            const passEl = document.getElementById(`pass-text-${id}`);
+            const iconEl = document.getElementById(`pass-icon-${id}`);
+            const entry = entries.find(e => String(e.id) === String(id));
+            
+            if (visibilityState[id]) {
+                passEl.innerText = entry.pass;
+                passEl.classList.remove('text-gray-300', 'tracking-[0.3em]');
+                passEl.classList.add('text-gray-600', 'font-mono');
+                iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`;
+            } else {
+                passEl.innerText = '••••••••';
+                passEl.classList.add('text-gray-300', 'tracking-[0.3em]');
+                passEl.classList.remove('text-gray-600', 'font-mono');
+                iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+            }
+        }
+
         function render() {
             const list = document.getElementById('passwordList');
             const empty = document.getElementById('emptyState');
@@ -242,13 +262,15 @@
                 return matchSearch && matchParent && matchSub;
             });
 
-            // 執行排序
+            // 排序邏輯實作
             if (sortVal === 'newest') {
                 filtered.sort((a, b) => b.id - a.id);
             } else if (sortVal === 'oldest') {
                 filtered.sort((a, b) => a.id - b.id);
-            } else if (sortVal === 'alpha') {
+            } else if (sortVal === 'alpha-asc') {
                 filtered.sort((a, b) => a.site.localeCompare(b.site, 'zh-Hant'));
+            } else if (sortVal === 'alpha-desc') {
+                filtered.sort((a, b) => b.site.localeCompare(a.site, 'zh-Hant'));
             }
 
             if (filtered.length === 0) {
@@ -258,6 +280,7 @@
             empty.classList.add('hidden');
 
             filtered.forEach(e => {
+                const isVisible = visibilityState[e.id] || false;
                 const card = document.createElement('div');
                 card.className = "fade-in bg-white/90 p-7 rounded-[2.5rem] card-shadow border border-white space-y-5";
                 card.innerHTML = `
@@ -283,13 +306,25 @@
                         </div>
                     </div>
                     <div class="space-y-3">
-                        <div onclick="copyText('${e.user}')" class="bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group">
+                        <div onclick="copyText('${e.user}')" class="bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group transition-all">
                             <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">User</span>
                             <span class="text-sm font-medium text-gray-600">${e.user}</span>
                         </div>
-                        <div onclick="copyText('${e.pass}')" class="bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group">
-                            <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">Pass</span>
-                            <span class="text-sm font-mono text-gray-300 tracking-[0.3em]">••••••••</span>
+                        <div class="flex gap-2">
+                            <div onclick="copyText('${e.pass}')" class="flex-1 bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group transition-all overflow-hidden">
+                                <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors shrink-0">Pass</span>
+                                <span id="pass-text-${e.id}" class="text-sm ${isVisible ? 'text-gray-600 font-mono' : 'text-gray-300 tracking-[0.3em]'} truncate ml-2">
+                                    ${isVisible ? e.pass : '••••••••'}
+                                </span>
+                            </div>
+                            <button onclick="togglePassword('${e.id}')" class="w-14 bg-white/60 rounded-2xl border border-gray-50/50 flex items-center justify-center text-gray-300 hover:text-gray-400 btn-hover">
+                                <svg id="pass-icon-${e.id}" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    ${isVisible 
+                                        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`
+                                        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`
+                                    }
+                                </svg>
+                            </button>
                         </div>
                         ${e.note ? `<div class="mt-4 p-4 rounded-xl italic text-xs text-gray-400 border-l-2 border-[#c9ada7] bg-white/50">${e.note.replace(/\n/g, '<br>')}</div>` : ''}
                     </div>
