@@ -1,99 +1,153 @@
 <!DOCTYPE html>
+
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>密碼離線庫</title>
-    
-    <!-- PWA 與 主畫面縮圖設定 -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="密碼金庫">
-    <meta name="theme-color" content="#f2e9e4">
-    
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+CiAgPHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIzNiIgZmlsbD0iI2YyZTllNCIvPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQwLCA0MCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzRhNGU2OSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgPHJlY3QgeD0iMTAiIHk9IjQ1IiB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHJ4PSI4Ii8+CiAgICA8cGF0aCBkPSJNMzAgNDVWMzBhMjAgMjAgMCAwIDEgNDAgMHYxNSIvPgogICAgPGNpcmNsZSBjeD0iNTAiIGN5PSI3NSIgcj0iNSIvPgogIDwvZz4KPC9zdmc+">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-        
-        :root {
-            --morandi-beige: #f2e9e4;
-            --morandi-dust: #c9ada7;
-            --morandi-taupe: #9a8c98;
-            --morandi-dark: #4a4e69;
-            --morandi-clay: #22223b;
-        }
+```
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="密碼金庫">
+<meta name="theme-color" content="#f2e9e4">
 
-        body { 
-            font-family: 'Noto Sans TC', sans-serif; 
-            background-color: var(--morandi-beige);
-            color: var(--morandi-clay);
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior-y: contain;
-        }
+<!-- Apple Touch Icon（PNG base64，iOS 不支援 SVG） -->
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAAoAQjpAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF7UlEQVR4nO3dS2gUWRjG8VO2iomJl4iXqCDeUFERFVFREQVFUBRFUQRFURRFUQRFUQRFURQFEUXEiyiKIl7wgoiIIoqIIoqIqIgiqqiIqIgiqqiIqIiiqGj+kMOQ6Z5Od3f1+arqPL8XCJnp7qrq+vLVqVPV1WUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkJahoaHiJEnWVMpxnJMk+VApJ0mSNZVynFNJkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiSVJHlOkiQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkJZfAAAA//8DANn+rI8AAAAASUVORK5CYII=">
 
-        .serif { font-family: 'Noto Serif TC', serif; }
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
-        .tab-main-active {
-            background-color: var(--morandi-taupe);
-            color: white;
-            box-shadow: 0 4px 12px rgba(154, 140, 152, 0.4);
-        }
+    :root {
+        --morandi-beige: #f2e9e4;
+        --morandi-dust: #c9ada7;
+        --morandi-taupe: #9a8c98;
+        --morandi-dark: #4a4e69;
+        --morandi-clay: #22223b;
+    }
 
-        .tab-sub-active {
-            background-color: var(--morandi-dust);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(201, 173, 167, 0.3);
-        }
+    body {
+        font-family: 'Noto Sans TC', sans-serif;
+        background-color: var(--morandi-beige);
+        color: var(--morandi-clay);
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior-y: contain;
+    }
 
-        .card-shadow {
-            box-shadow: 0 10px 30px -10px rgba(74, 78, 105, 0.12);
-        }
+    .serif { font-family: 'Noto Serif TC', serif; }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .tab-main-active {
+        background-color: var(--morandi-taupe);
+        color: white;
+        box-shadow: 0 4px 12px rgba(154, 140, 152, 0.4);
+    }
 
-        input, select, textarea { 
-            font-size: 16px !important; 
-            background-color: rgba(255, 255, 255, 0.6) !important;
-            border: 1px solid rgba(154, 140, 152, 0.15) !important;
-        }
+    .tab-sub-active {
+        background-color: var(--morandi-dust);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(201, 173, 167, 0.3);
+    }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--morandi-taupe) !important;
-            background-color: white !important;
-        }
+    .card-shadow { box-shadow: 0 10px 30px -10px rgba(74, 78, 105, 0.12); }
 
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .btn-hover:active { transform: scale(0.95); transition: transform 0.1s; }
-        
-        .sort-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a8c98' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1em;
-        }
-    </style>
+    input, select, textarea {
+        font-size: 16px !important;
+        background-color: rgba(255, 255, 255, 0.6) !important;
+        border: 1px solid rgba(154, 140, 152, 0.15) !important;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--morandi-taupe) !important;
+        background-color: white !important;
+    }
+
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-hover:active { transform: scale(0.95); transition: transform 0.1s; }
+
+    .sort-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a8c98' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1em;
+    }
+
+    /* 密碼強度條 */
+    .strength-bar { transition: width 0.3s ease, background-color 0.3s ease; }
+
+    /* 鎖定畫面 */
+    #lockScreen {
+        background: var(--morandi-beige);
+    }
+
+    /* 確認 Dialog */
+    #confirmSheet {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    #confirmSheet.hidden-sheet {
+        transform: translateY(100%);
+        opacity: 0;
+        pointer-events: none;
+    }
+</style>
+```
+
 </head>
 <body class="pb-32 min-h-screen">
 
+```
+<!-- 鎖定畫面 -->
+<div id="lockScreen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center px-8">
+    <div class="w-full max-w-sm text-center">
+        <!-- 圖示 -->
+        <div class="w-20 h-20 mx-auto mb-8 rounded-full bg-white/60 flex items-center justify-center shadow-lg">
+            <svg class="w-9 h-9 text-[#9a8c98]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+        </div>
+        <h1 class="serif text-2xl font-bold tracking-[0.2em] text-gray-600 mb-2">密碼離線庫</h1>
+        <p id="lockHint" class="text-xs text-gray-400 mb-10 tracking-widest">輸入主密碼以解鎖</p>
+
+        <div class="space-y-4">
+            <input type="password" id="masterInput" placeholder="主密碼"
+                class="w-full px-6 py-4 rounded-full text-center text-sm shadow-inner"
+                onkeydown="if(event.key==='Enter') handleUnlock()">
+
+            <!-- 第一次設定時顯示確認欄 -->
+            <input type="password" id="masterConfirm" placeholder="再次輸入確認"
+                class="w-full px-6 py-4 rounded-full text-center text-sm shadow-inner hidden"
+                onkeydown="if(event.key==='Enter') handleUnlock()">
+
+            <button onclick="handleUnlock()"
+                class="w-full bg-[#22223b] text-white py-4 rounded-full font-bold text-sm tracking-widest shadow-xl active:scale-95 transition-transform">
+                <span id="lockBtnText">解鎖</span>
+            </button>
+
+            <p id="lockError" class="text-xs text-red-400 tracking-wide hidden">密碼錯誤，請再試一次</p>
+        </div>
+    </div>
+</div>
+
+<!-- 主內容（鎖定時隱藏） -->
+<div id="mainContent" class="hidden">
     <header class="px-6 py-12 text-center">
         <h1 class="serif text-3xl font-bold tracking-[0.25em] text-gray-700">密 碼 離 線 庫</h1>
         <p class="text-[10px] uppercase tracking-[0.4em] text-gray-400 mt-3 font-light">Advanced Secure Archive</p>
     </header>
 
     <main class="max-w-xl mx-auto px-6">
-        
         <div class="flex flex-col gap-6 mb-8">
             <!-- 工具列 -->
             <div class="flex flex-wrap justify-between items-center gap-4">
@@ -105,6 +159,13 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     </button>
                     <input type="file" id="fileIn" class="hidden" accept=".json" onchange="importJSON(event)">
+                    <!-- 鎖定按鈕 -->
+                    <button onclick="lockVault()" class="w-10 h-10 rounded-full bg-white/60 flex items-center justify-center text-gray-500 shadow-sm btn-hover" title="鎖定金庫">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                    </button>
                 </div>
 
                 <!-- 排序選擇器 -->
@@ -142,313 +203,743 @@
         <div id="passwordList" class="space-y-6"></div>
         <div id="emptyState" class="hidden py-24 text-center text-gray-400 serif italic text-sm">目前沒有相關紀錄</div>
     </main>
+</div>
 
-    <!-- 新增按鈕 -->
-    <button onclick="openModal()" class="fixed bottom-10 right-8 w-14 h-14 bg-[#22223b] text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 active:scale-95 transition-transform">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-    </button>
+<!-- 新增按鈕 -->
+<button id="addBtn" onclick="openModal()" class="hidden fixed bottom-10 right-8 w-14 h-14 bg-[#22223b] text-white rounded-full shadow-2xl flex items-center justify-center text-2xl z-40 active:scale-95 transition-transform">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+</button>
 
-    <!-- 彈窗 -->
-    <div id="modal" class="fixed inset-0 bg-slate-900/40 z-50 hidden items-end sm:items-center justify-center backdrop-blur-md">
-        <div class="bg-white w-full max-w-md rounded-t-[3rem] sm:rounded-[2.5rem] p-10 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <div class="flex justify-between items-center mb-8">
-                <h2 id="modalTitle" class="serif text-xl font-bold text-gray-600">記下一筆密碼</h2>
-                <button onclick="closeModal()" class="text-gray-300 hover:text-gray-500 transition-colors">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+<!-- 新增/編輯 彈窗 -->
+<div id="modal" class="fixed inset-0 bg-slate-900/40 z-50 hidden items-end sm:items-center justify-center backdrop-blur-md">
+    <div class="bg-white w-full max-w-md rounded-t-[3rem] sm:rounded-[2.5rem] p-10 shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="flex justify-between items-center mb-8">
+            <h2 id="modalTitle" class="serif text-xl font-bold text-gray-600">記下一筆密碼</h2>
+            <button onclick="closeModal()" class="text-gray-300 hover:text-gray-500 transition-colors">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <select id="fParent" onchange="updateSubOptions()" class="w-full p-4 rounded-2xl text-xs font-bold text-gray-500 border-none outline-none ring-0">
+                    <option value="個人">個人</option>
+                    <option value="工作">工作</option>
+                    <option value="家人">家人</option>
+                </select>
+                <select id="fSub" class="w-full p-4 rounded-2xl text-xs font-bold text-gray-500 border-none outline-none ring-0"></select>
             </div>
-            
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <select id="fParent" onchange="updateSubOptions()" class="w-full p-4 rounded-2xl text-xs font-bold text-gray-500 border-none outline-none ring-0">
-                        <option value="個人">個人</option>
-                        <option value="工作">工作</option>
-                        <option value="家人">家人</option>
-                    </select>
-                    <select id="fSub" class="w-full p-4 rounded-2xl text-xs font-bold text-gray-500 border-none outline-none ring-0"></select>
+            <input type="text" id="fSite" placeholder="服務名稱 (必填)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
+            <input type="url" id="fUrl" placeholder="登入網址 (https://...)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
+            <input type="text" id="fUser" placeholder="帳號 (必填)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
+
+            <!-- 密碼欄 + 強度條 -->
+            <div class="space-y-2">
+                <div class="relative">
+                    <input type="text" id="fPass" placeholder="密碼 (必填)" oninput="updateStrength()"
+                        class="w-full p-4 rounded-2xl text-sm font-mono border-none shadow-sm pr-12">
+                    <button onclick="generatePassword()" class="absolute right-4 top-4 text-gray-300 hover:text-[#9a8c98] transition-colors" title="產生隨機密碼">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
                 </div>
-                <input type="text" id="fSite" placeholder="服務名稱 (必填)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
-                <input type="url" id="fUrl" placeholder="登入網址 (https://...)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
-                <input type="text" id="fUser" placeholder="帳號 (必填)" class="w-full p-4 rounded-2xl text-sm border-none shadow-sm">
-                <input type="text" id="fPass" placeholder="密碼 (必填)" class="w-full p-4 rounded-2xl text-sm font-mono border-none shadow-sm">
-                <textarea id="fNote" placeholder="備註內容" class="w-full p-4 rounded-2xl text-sm border-none h-24 resize-none shadow-sm"></textarea>
-                
-                <button onclick="saveEntry()" class="w-full bg-[#22223b] text-white py-4 rounded-2xl font-bold text-sm tracking-widest mt-6 shadow-xl active:scale-95 transition-transform">儲存紀錄</button>
+                <!-- 強度指示器 -->
+                <div class="flex gap-1 h-1" id="strengthBars">
+                    <div class="flex-1 rounded-full bg-gray-100" id="sb1"></div>
+                    <div class="flex-1 rounded-full bg-gray-100" id="sb2"></div>
+                    <div class="flex-1 rounded-full bg-gray-100" id="sb3"></div>
+                    <div class="flex-1 rounded-full bg-gray-100" id="sb4"></div>
+                </div>
+                <p id="strengthLabel" class="text-[10px] text-gray-300 tracking-widest"></p>
             </div>
+
+            <textarea id="fNote" placeholder="備註內容" class="w-full p-4 rounded-2xl text-sm border-none h-24 resize-none shadow-sm"></textarea>
+
+            <button onclick="saveEntry()" class="w-full bg-[#22223b] text-white py-4 rounded-2xl font-bold text-sm tracking-widest mt-6 shadow-xl active:scale-95 transition-transform">儲存紀錄</button>
         </div>
     </div>
+</div>
 
-    <!-- 吐司訊息 -->
-    <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-0 transition-all duration-500 z-[100] text-[10px] tracking-widest pointer-events-none uppercase">Success</div>
+<!-- 自訂刪除確認 Sheet -->
+<div id="overlayBg" class="fixed inset-0 bg-slate-900/30 z-[60] hidden backdrop-blur-sm" onclick="closeConfirm()"></div>
+<div id="confirmSheet" class="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-[2.5rem] p-8 shadow-2xl max-w-md mx-auto hidden-sheet hidden">
+    <p class="serif text-lg font-bold text-gray-600 mb-2 text-center">確定刪除？</p>
+    <p id="confirmMsg" class="text-xs text-gray-400 text-center mb-8 tracking-wide">此操作無法復原</p>
+    <div class="flex gap-3">
+        <button onclick="closeConfirm()" class="flex-1 py-4 rounded-2xl border border-gray-100 text-sm text-gray-400 font-bold active:scale-95 transition-transform">取消</button>
+        <button id="confirmBtn" class="flex-1 py-4 rounded-2xl bg-red-400/80 text-white text-sm font-bold active:scale-95 transition-transform">刪除</button>
+    </div>
+</div>
 
-    <script>
-        const categories = {
-            '個人': ['遊戲', '社群', '工具', '購物', '金融', '其他'],
-            '工作': ['官網', '社群平台', '伺服器', '軟體', '人員', '其他'],
-            '家人': ['媽媽', '琦琦', '公公', '婆婆', '其他']
-        };
+<!-- 吐司訊息 -->
+<div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-0 transition-all duration-500 z-[100] text-xs tracking-widest pointer-events-none"></div>
 
-        let entries = JSON.parse(localStorage.getItem('vault_pro_db_final') || '[]');
-        let editingId = null;
-        let currentParentFilter = 'all';
-        let currentSubFilter = 'all';
-        let visibilityState = {};
+<script>
+// ──────────────────────────────────────────────
+//  工具：HTML escape（XSS 防護）
+// ──────────────────────────────────────────────
+function esc(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(str || ''));
+    return d.innerHTML;
+}
 
-        function updateSubOptions() {
-            const parent = document.getElementById('fParent').value;
-            const subSelect = document.getElementById('fSub');
-            subSelect.innerHTML = categories[parent].map(sub => `<option value="${sub}">${sub}</option>`).join('');
+function safeText(el, text) {
+    el.textContent = text || '';
+}
+
+// ──────────────────────────────────────────────
+//  工具：URL 安全驗證
+// ──────────────────────────────────────────────
+function safeUrl(url) {
+    if (!url) return null;
+    try {
+        const u = new URL(url);
+        if (u.protocol === 'https:' || u.protocol === 'http:') return u.href;
+    } catch(e) {}
+    return null;
+}
+
+// ──────────────────────────────────────────────
+//  加密模組（Web Crypto API，AES-GCM + PBKDF2）
+// ──────────────────────────────────────────────
+const STORAGE_KEY = 'vault_enc_v1';
+const SALT_KEY    = 'vault_salt_v1';
+const SESSION_KEY = 'vault_session_key'; // sessionStorage
+
+async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+    );
+}
+
+async function encryptData(key, data) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const enc = new TextEncoder();
+    const ciphertext = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        enc.encode(JSON.stringify(data))
+    );
+    // 合併 iv + ciphertext，base64 存儲
+    const combined = new Uint8Array(iv.byteLength + ciphertext.byteLength);
+    combined.set(iv, 0);
+    combined.set(new Uint8Array(ciphertext), iv.byteLength);
+    return btoa(String.fromCharCode(...combined));
+}
+
+async function decryptData(key, b64) {
+    const combined = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const iv = combined.slice(0, 12);
+    const ciphertext = combined.slice(12);
+    const dec = new TextDecoder();
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+    return JSON.parse(dec.decode(plain));
+}
+
+// 把 CryptoKey 匯出成 base64 存進 sessionStorage（分頁關閉即清除）
+async function cacheKeyInSession(key) {
+    const raw = await crypto.subtle.exportKey('raw', key);
+    sessionStorage.setItem(SESSION_KEY, btoa(String.fromCharCode(...new Uint8Array(raw))));
+}
+
+async function loadKeyFromSession() {
+    const b64 = sessionStorage.getItem(SESSION_KEY);
+    if (!b64) return null;
+    const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    return crypto.subtle.importKey('raw', raw, { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+}
+
+// ──────────────────────────────────────────────
+//  全域狀態
+// ──────────────────────────────────────────────
+const categories = {
+    '個人': ['遊戲', '社群', '工具', '購物', '金融', '其他'],
+    '工作': ['官網', '社群平台', '伺服器', '軟體', '人員', '其他'],
+    '家人': ['媽媽', '琦琦', '公公', '婆婆', '其他']
+};
+
+let entries = [];
+let cryptoKey = null;
+let editingId = null;
+let currentParentFilter = 'all';
+let currentSubFilter = 'all';
+let visibilityState = {};
+let pendingDeleteId = null;
+
+// ──────────────────────────────────────────────
+//  鎖定 / 解鎖流程
+// ──────────────────────────────────────────────
+async function init() {
+    const hasSalt = localStorage.getItem(SALT_KEY);
+    const cachedKey = await loadKeyFromSession();
+
+    if (cachedKey) {
+        // 同分頁 session，自動解鎖
+        cryptoKey = cachedKey;
+        await loadEntries();
+        showMain();
+        return;
+    }
+
+    if (!hasSalt) {
+        // 第一次使用：顯示設定主密碼 UI
+        document.getElementById('lockHint').textContent = '請設定您的主密碼';
+        document.getElementById('lockBtnText').textContent = '設定並解鎖';
+        document.getElementById('masterConfirm').classList.remove('hidden');
+    }
+    // lockScreen 已預設顯示
+}
+
+async function handleUnlock() {
+    const pw = document.getElementById('masterInput').value;
+    const errEl = document.getElementById('lockError');
+    errEl.classList.add('hidden');
+
+    if (!pw) return;
+
+    const hasSalt = localStorage.getItem(SALT_KEY);
+
+    if (!hasSalt) {
+        // 第一次設定
+        const pw2 = document.getElementById('masterConfirm').value;
+        if (pw !== pw2) {
+            errEl.textContent = '兩次密碼不一致';
+            errEl.classList.remove('hidden');
+            return;
         }
-
-        function setFilter(value, type) {
-            if (type === 'parent') {
-                currentParentFilter = value;
-                currentSubFilter = 'all';
-                document.querySelectorAll('[id^="m-"]').forEach(el => {
-                    el.className = "flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400 transition-all duration-300";
-                });
-                document.getElementById('m-' + value).className = "tab-main-active flex-1 py-2.5 rounded-full text-xs font-bold transition-all duration-300";
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        localStorage.setItem(SALT_KEY, btoa(String.fromCharCode(...salt)));
+        cryptoKey = await deriveKey(pw, salt);
+        await cacheKeyInSession(cryptoKey);
+        entries = [];
+        await saveEntries();
+        showMain();
+    } else {
+        // 驗證主密碼
+        try {
+            const saltB64 = localStorage.getItem(SALT_KEY);
+            const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
+            const key = await deriveKey(pw, salt);
+            const enc = localStorage.getItem(STORAGE_KEY);
+            if (enc) {
+                entries = await decryptData(key, enc);
             } else {
-                currentSubFilter = value;
+                entries = [];
             }
-            renderSubFilterBar();
-            render();
+            cryptoKey = key;
+            await cacheKeyInSession(cryptoKey);
+            showMain();
+        } catch(e) {
+            errEl.textContent = '密碼錯誤，請再試一次';
+            errEl.classList.remove('hidden');
+            document.getElementById('masterInput').value = '';
         }
+    }
+}
 
-        function renderSubFilterBar() {
-            const bar = document.getElementById('subFilterBar');
-            if (currentParentFilter === 'all') {
-                bar.innerHTML = '';
-                return;
-            }
-            let html = `<button onclick="setFilter('all', 'sub')" class="px-5 py-1.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${currentSubFilter === 'all' ? 'tab-sub-active' : 'text-gray-400 bg-white/30'}">全部</button>`;
-            categories[currentParentFilter].forEach(s => {
-                html += `<button onclick="setFilter('${s}', 'sub')" class="px-5 py-1.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${currentSubFilter === s ? 'tab-sub-active' : 'text-gray-400 bg-white/30'}">${s}</button>`;
-            });
-            bar.innerHTML = html;
-        }
+function showMain() {
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+    document.getElementById('addBtn').classList.remove('hidden');
+    document.getElementById('addBtn').style.display = 'flex';
+    renderSubFilterBar();
+    render();
+}
 
-        function togglePassword(id) {
-            visibilityState[id] = !visibilityState[id];
-            const passEl = document.getElementById(`pass-text-${id}`);
-            const iconEl = document.getElementById(`pass-icon-${id}`);
-            const entry = entries.find(e => String(e.id) === String(id));
-            
-            if (visibilityState[id]) {
-                passEl.innerText = entry.pass;
-                passEl.classList.remove('text-gray-300', 'tracking-[0.3em]');
-                passEl.classList.add('text-gray-600', 'font-mono');
-                iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`;
-            } else {
-                passEl.innerText = '••••••••';
-                passEl.classList.add('text-gray-300', 'tracking-[0.3em]');
-                passEl.classList.remove('text-gray-600', 'font-mono');
-                iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
-            }
-        }
+function lockVault() {
+    sessionStorage.removeItem(SESSION_KEY);
+    cryptoKey = null;
+    entries = [];
+    document.getElementById('mainContent').classList.add('hidden');
+    document.getElementById('addBtn').style.display = 'none';
+    document.getElementById('lockScreen').classList.remove('hidden');
+    document.getElementById('masterInput').value = '';
+    document.getElementById('lockHint').textContent = '輸入主密碼以解鎖';
+    document.getElementById('lockBtnText').textContent = '解鎖';
+    document.getElementById('masterConfirm').classList.add('hidden');
+    document.getElementById('lockError').classList.add('hidden');
+}
 
-        function render() {
-            const list = document.getElementById('passwordList');
-            const empty = document.getElementById('emptyState');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const sortVal = document.getElementById('sortOrder').value;
-            
-            list.innerHTML = '';
+// ──────────────────────────────────────────────
+//  存取加密資料
+// ──────────────────────────────────────────────
+async function saveEntries() {
+    if (!cryptoKey) return;
+    const enc = await encryptData(cryptoKey, entries);
+    localStorage.setItem(STORAGE_KEY, enc);
+}
 
-            let filtered = entries.filter(e => {
-                const matchSearch = e.site.toLowerCase().includes(search) || e.user.toLowerCase().includes(search) || (e.note && e.note.toLowerCase().includes(search));
-                const matchParent = currentParentFilter === 'all' || e.parent === currentParentFilter;
-                const matchSub = currentSubFilter === 'all' || e.sub === currentSubFilter;
-                return matchSearch && matchParent && matchSub;
-            });
+async function loadEntries() {
+    const enc = localStorage.getItem(STORAGE_KEY);
+    if (!enc || !cryptoKey) { entries = []; return; }
+    try {
+        entries = await decryptData(cryptoKey, enc);
+    } catch(e) {
+        entries = [];
+    }
+}
 
-            // 排序邏輯實作
-            if (sortVal === 'newest') {
-                filtered.sort((a, b) => b.id - a.id);
-            } else if (sortVal === 'oldest') {
-                filtered.sort((a, b) => a.id - b.id);
-            } else if (sortVal === 'alpha-asc') {
-                filtered.sort((a, b) => a.site.localeCompare(b.site, 'zh-Hant'));
-            } else if (sortVal === 'alpha-desc') {
-                filtered.sort((a, b) => b.site.localeCompare(a.site, 'zh-Hant'));
-            }
+// ──────────────────────────────────────────────
+//  分類 / 篩選
+// ──────────────────────────────────────────────
+function updateSubOptions() {
+    const parent = document.getElementById('fParent').value;
+    const subSelect = document.getElementById('fSub');
+    subSelect.innerHTML = '';
+    categories[parent].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        subSelect.appendChild(opt);
+    });
+}
 
-            if (filtered.length === 0) {
-                empty.classList.remove('hidden');
-                return;
-            }
-            empty.classList.add('hidden');
+function setFilter(value, type) {
+    if (type === 'parent') {
+        currentParentFilter = value;
+        currentSubFilter = 'all';
+        document.querySelectorAll('[id^="m-"]').forEach(el => {
+            el.className = "flex-1 py-2.5 rounded-full text-xs font-bold text-gray-400 transition-all duration-300";
+        });
+        document.getElementById('m-' + value).className = "tab-main-active flex-1 py-2.5 rounded-full text-xs font-bold transition-all duration-300";
+    } else {
+        currentSubFilter = value;
+    }
+    renderSubFilterBar();
+    render();
+}
 
-            filtered.forEach(e => {
-                const isVisible = visibilityState[e.id] || false;
-                const card = document.createElement('div');
-                card.className = "fade-in bg-white/90 p-7 rounded-[2.5rem] card-shadow border border-white space-y-5";
-                card.innerHTML = `
-                    <div class="flex justify-between items-start border-b border-gray-50 pb-4">
-                        <div>
-                            <div class="flex gap-2 mb-2">
-                                <span class="text-[8px] font-bold text-white bg-[#9a8c98] px-2 py-0.5 rounded-full">${e.parent}</span>
-                                <span class="text-[8px] font-bold text-gray-400 bg-gray-100/50 px-2 py-0.5 rounded-full">${e.sub}</span>
-                            </div>
-                            <h3 class="serif text-xl font-bold text-gray-700">${e.site}</h3>
-                        </div>
-                        <div class="flex gap-3">
-                            ${e.url ? `
-                                <button onclick="window.open('${e.url}')" class="text-gray-300 hover:text-blue-400 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                                </button>` : ''}
-                            <button onclick="editEntry('${e.id}')" class="text-gray-300 hover:text-gray-500 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            </button>
-                            <button onclick="deleteEntry('${e.id}')" class="text-gray-200 hover:text-red-300 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-3">
-                        <div onclick="copyText('${e.user}')" class="bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group transition-all">
-                            <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors">User</span>
-                            <span class="text-sm font-medium text-gray-600">${e.user}</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <div onclick="copyText('${e.pass}')" class="flex-1 bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group transition-all overflow-hidden">
-                                <span class="text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors shrink-0">Pass</span>
-                                <span id="pass-text-${e.id}" class="text-sm ${isVisible ? 'text-gray-600 font-mono' : 'text-gray-300 tracking-[0.3em]'} truncate ml-2">
-                                    ${isVisible ? e.pass : '••••••••'}
-                                </span>
-                            </div>
-                            <button onclick="togglePassword('${e.id}')" class="w-14 bg-white/60 rounded-2xl border border-gray-50/50 flex items-center justify-center text-gray-300 hover:text-gray-400 btn-hover">
-                                <svg id="pass-icon-${e.id}" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    ${isVisible 
-                                        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`
-                                        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`
-                                    }
-                                </svg>
-                            </button>
-                        </div>
-                        ${e.note ? `<div class="mt-4 p-4 rounded-xl italic text-xs text-gray-400 border-l-2 border-[#c9ada7] bg-white/50">${e.note.replace(/\n/g, '<br>')}</div>` : ''}
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }
+function renderSubFilterBar() {
+    const bar = document.getElementById('subFilterBar');
+    bar.innerHTML = '';
+    if (currentParentFilter === 'all') return;
 
-        function openModal() {
-            document.getElementById('modal').style.display = 'flex';
-            updateSubOptions();
-            document.body.style.overflow = 'hidden';
-        }
+    const makeBtn = (label, val) => {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        btn.className = `px-5 py-1.5 rounded-full text-[10px] font-bold shrink-0 transition-all ${currentSubFilter === val ? 'tab-sub-active' : 'text-gray-400 bg-white/30'}`;
+        btn.onclick = () => setFilter(val, 'sub');
+        bar.appendChild(btn);
+    };
 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            editingId = null;
-            document.getElementById('modalTitle').innerText = '記下一筆密碼';
-            ['fSite','fUrl','fUser','fPass','fNote'].forEach(id => document.getElementById(id).value = '');
-        }
+    makeBtn('全部', 'all');
+    categories[currentParentFilter].forEach(s => makeBtn(s, s));
+}
 
-        function saveEntry() {
-            const data = {
-                id: editingId || Date.now().toString(),
-                parent: document.getElementById('fParent').value,
-                sub: document.getElementById('fSub').value,
-                site: document.getElementById('fSite').value.trim(),
-                url: document.getElementById('fUrl').value.trim(),
-                user: document.getElementById('fUser').value.trim(),
-                pass: document.getElementById('fPass').value.trim(),
-                note: document.getElementById('fNote').value.trim()
-            };
+// ──────────────────────────────────────────────
+//  密碼強度
+// ──────────────────────────────────────────────
+function calcStrength(pw) {
+    if (!pw) return 0;
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (pw.length >= 12) score++;
+    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+    if (/\d/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    return Math.min(4, score);
+}
 
-            if (!data.site || !data.user || !data.pass) return showToast('請填寫必填欄位');
+function updateStrength() {
+    const pw = document.getElementById('fPass').value;
+    const score = calcStrength(pw);
+    const colors = ['', 'bg-red-300', 'bg-orange-300', 'bg-yellow-300', 'bg-green-400'];
+    const labels = ['', '太弱', '普通', '還不錯', '非常強'];
+    for (let i = 1; i <= 4; i++) {
+        const bar = document.getElementById('sb' + i);
+        bar.className = `flex-1 rounded-full ${i <= score ? colors[score] : 'bg-gray-100'}`;
+    }
+    const lbl = document.getElementById('strengthLabel');
+    lbl.textContent = pw ? labels[score] : '';
+    lbl.style.color = ['', '#f9a8a8', '#fdba74', '#fcd34d', '#86efac'][score] || '';
+}
 
-            if (editingId) {
-                const idx = entries.findIndex(e => String(e.id) === String(editingId));
-                entries[idx] = data;
-            } else {
-                entries.push(data);
-            }
+function generatePassword() {
+    const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%^&*';
+    let pw = '';
+    const arr = crypto.getRandomValues(new Uint8Array(16));
+    arr.forEach(b => pw += chars[b % chars.length]);
+    document.getElementById('fPass').value = pw;
+    updateStrength();
+    showToast('已產生隨機密碼');
+}
 
-            localStorage.setItem('vault_pro_db_final', JSON.stringify(entries));
-            closeModal();
-            render();
-            showToast('存檔成功');
-        }
+// ──────────────────────────────────────────────
+//  渲染列表（全用 DOM API，無 innerHTML 拼字串）
+// ──────────────────────────────────────────────
+function render() {
+    const list = document.getElementById('passwordList');
+    const empty = document.getElementById('emptyState');
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const sortVal = document.getElementById('sortOrder').value;
 
-        function editEntry(id) {
-            const e = entries.find(x => String(x.id) === String(id));
-            if (!e) return;
-            editingId = String(id);
-            document.getElementById('fParent').value = e.parent;
-            updateSubOptions();
-            document.getElementById('fSub').value = e.sub;
-            document.getElementById('fSite').value = e.site;
-            document.getElementById('fUrl').value = e.url || '';
-            document.getElementById('fUser').value = e.user;
-            document.getElementById('fPass').value = e.pass;
-            document.getElementById('fNote').value = e.note || '';
-            document.getElementById('modalTitle').innerText = '修改紀錄';
-            document.getElementById('modal').style.display = 'flex';
-        }
+    list.innerHTML = '';
 
-        function deleteEntry(id) {
-            if (confirm('確定要永久刪除此紀錄嗎？')) {
-                entries = entries.filter(x => String(x.id) !== String(id));
-                localStorage.setItem('vault_pro_db_final', JSON.stringify(entries));
-                render();
-                showToast('已刪除');
-            }
-        }
+    let filtered = entries.filter(e => {
+        const q = (e.site + e.user + (e.note || '')).toLowerCase();
+        const matchSearch = q.includes(search);
+        const matchParent = currentParentFilter === 'all' || e.parent === currentParentFilter;
+        const matchSub = currentSubFilter === 'all' || e.sub === currentSubFilter;
+        return matchSearch && matchParent && matchSub;
+    });
 
-        function copyText(text) {
-            const el = document.createElement('textarea');
-            el.value = text; document.body.appendChild(el);
-            el.select(); document.execCommand('copy');
-            document.body.removeChild(el);
-            showToast('已複製到剪貼簿');
-        }
+    if (sortVal === 'newest')     filtered.sort((a,b) => b.id - a.id);
+    else if (sortVal === 'oldest') filtered.sort((a,b) => a.id - b.id);
+    else if (sortVal === 'alpha-asc')  filtered.sort((a,b) => a.site.localeCompare(b.site, 'zh-Hant'));
+    else if (sortVal === 'alpha-desc') filtered.sort((a,b) => b.site.localeCompare(a.site, 'zh-Hant'));
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-100 transition-all duration-500 z-[100] text-[10px] tracking-widest uppercase";
-            setTimeout(() => {
-                t.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-gray-800/90 text-white px-8 py-3 rounded-full opacity-0 transition-all duration-500 z-[100] text-[10px] tracking-widest uppercase";
-            }, 2000);
-        }
+    if (filtered.length === 0) {
+        empty.classList.remove('hidden');
+        return;
+    }
+    empty.classList.add('hidden');
 
-        function exportJSON() {
-            const a = document.createElement('a');
-            const dataStr = JSON.stringify(entries, null, 2);
-            a.href = URL.createObjectURL(new Blob([dataStr], {type: "application/json"}));
-            a.download = `vault_backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            showToast('導出備份成功');
-        }
+    filtered.forEach(e => buildCard(e, list));
+}
 
-        function importJSON(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const imported = JSON.parse(ev.target.result);
-                    if (confirm(`已發現 ${imported.length} 筆資料，要覆蓋目前內容嗎？`)) {
-                        entries = imported;
-                        localStorage.setItem('vault_pro_db_final', JSON.stringify(entries));
-                        render();
-                        showToast('匯入完成');
-                    }
-                } catch (err) {
-                    showToast('檔案格式錯誤');
+function buildCard(e, container) {
+    const isVisible = visibilityState[e.id] || false;
+
+    const card = document.createElement('div');
+    card.className = "fade-in bg-white/90 p-7 rounded-[2.5rem] card-shadow border border-white space-y-5";
+
+    // ── 頂部：標籤 + 標題 + 按鈕列 ──
+    const header = document.createElement('div');
+    header.className = "flex justify-between items-start border-b border-gray-50 pb-4";
+
+    const titleBlock = document.createElement('div');
+
+    const badgeRow = document.createElement('div');
+    badgeRow.className = "flex gap-2 mb-2";
+
+    const badgeParent = document.createElement('span');
+    badgeParent.className = "text-[8px] font-bold text-white bg-[#9a8c98] px-2 py-0.5 rounded-full";
+    safeText(badgeParent, e.parent);
+
+    const badgeSub = document.createElement('span');
+    badgeSub.className = "text-[8px] font-bold text-gray-400 bg-gray-100/50 px-2 py-0.5 rounded-full";
+    safeText(badgeSub, e.sub);
+
+    badgeRow.append(badgeParent, badgeSub);
+
+    const title = document.createElement('h3');
+    title.className = "serif text-xl font-bold text-gray-700";
+    safeText(title, e.site);
+
+    titleBlock.append(badgeRow, title);
+
+    const btnRow = document.createElement('div');
+    btnRow.className = "flex gap-3";
+
+    // URL 按鈕
+    const validUrl = safeUrl(e.url);
+    if (validUrl) {
+        const urlBtn = document.createElement('button');
+        urlBtn.className = "text-gray-300 hover:text-blue-400 transition-colors";
+        urlBtn.title = "前往登入頁";
+        urlBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>`;
+        urlBtn.addEventListener('click', () => window.open(validUrl, '_blank', 'noopener,noreferrer'));
+        btnRow.appendChild(urlBtn);
+    }
+
+    // 編輯按鈕
+    const editBtn = document.createElement('button');
+    editBtn.className = "text-gray-300 hover:text-gray-500 transition-colors";
+    editBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>`;
+    editBtn.addEventListener('click', () => editEntry(e.id));
+
+    // 刪除按鈕
+    const delBtn = document.createElement('button');
+    delBtn.className = "text-gray-200 hover:text-red-300 transition-colors";
+    delBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`;
+    delBtn.addEventListener('click', () => openConfirm(e.id, e.site));
+
+    btnRow.append(editBtn, delBtn);
+    header.append(titleBlock, btnRow);
+
+    // ── 資料列 ──
+    const body = document.createElement('div');
+    body.className = "space-y-3";
+
+    // 帳號列（點擊複製）
+    const userRow = document.createElement('div');
+    userRow.className = "bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group transition-all";
+    userRow.addEventListener('click', () => copyText(e.user));
+
+    const userLabel = document.createElement('span');
+    userLabel.className = "text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors";
+    userLabel.textContent = 'User';
+
+    const userVal = document.createElement('span');
+    userVal.className = "text-sm font-medium text-gray-600";
+    safeText(userVal, e.user);
+
+    userRow.append(userLabel, userVal);
+
+    // 密碼列
+    const passWrap = document.createElement('div');
+    passWrap.className = "flex gap-2";
+
+    const passRow = document.createElement('div');
+    passRow.className = "flex-1 bg-[#faf9f8] p-4 rounded-2xl flex justify-between items-center active:bg-gray-100 border border-gray-50/50 cursor-pointer group transition-all overflow-hidden";
+    passRow.addEventListener('click', () => copyText(e.pass));
+
+    const passLabel = document.createElement('span');
+    passLabel.className = "text-[9px] text-gray-300 font-bold uppercase tracking-widest italic group-hover:text-gray-400 transition-colors shrink-0";
+    passLabel.textContent = 'Pass';
+
+    const passText = document.createElement('span');
+    passText.id = `pass-text-${e.id}`;
+    passText.className = `text-sm truncate ml-2 ${isVisible ? 'text-gray-600 font-mono' : 'text-gray-300 tracking-[0.3em]'}`;
+    passText.textContent = isVisible ? e.pass : '••••••••';
+
+    passRow.append(passLabel, passText);
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = "w-14 bg-white/60 rounded-2xl border border-gray-50/50 flex items-center justify-center text-gray-300 hover:text-gray-400 btn-hover";
+    toggleBtn.addEventListener('click', () => togglePassword(e.id));
+
+    const eyeIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    eyeIcon.setAttribute('id', `pass-icon-${e.id}`);
+    eyeIcon.setAttribute('class', 'w-5 h-5');
+    eyeIcon.setAttribute('fill', 'none');
+    eyeIcon.setAttribute('stroke', 'currentColor');
+    eyeIcon.setAttribute('viewBox', '0 0 24 24');
+    eyeIcon.innerHTML = isVisible
+        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`
+        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+
+    toggleBtn.appendChild(eyeIcon);
+    passWrap.append(passRow, toggleBtn);
+
+    body.append(userRow, passWrap);
+
+    // 備註
+    if (e.note) {
+        const noteEl = document.createElement('div');
+        noteEl.className = "mt-4 p-4 rounded-xl italic text-xs text-gray-400 border-l-2 border-[#c9ada7] bg-white/50";
+        // 備註允許換行，但要先 escape 再還原換行為 <br>
+        noteEl.innerHTML = esc(e.note).replace(/\n/g, '<br>');
+        body.appendChild(noteEl);
+    }
+
+    card.append(header, body);
+    container.appendChild(card);
+}
+
+// ──────────────────────────────────────────────
+//  顯示/隱藏密碼
+// ──────────────────────────────────────────────
+function togglePassword(id) {
+    visibilityState[id] = !visibilityState[id];
+    const passEl = document.getElementById(`pass-text-${id}`);
+    const iconEl = document.getElementById(`pass-icon-${id}`);
+    const entry = entries.find(e => String(e.id) === String(id));
+
+    if (visibilityState[id]) {
+        passEl.textContent = entry.pass;
+        passEl.classList.remove('text-gray-300', 'tracking-[0.3em]');
+        passEl.classList.add('text-gray-600', 'font-mono');
+        iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`;
+    } else {
+        passEl.textContent = '••••••••';
+        passEl.classList.add('text-gray-300', 'tracking-[0.3em]');
+        passEl.classList.remove('text-gray-600', 'font-mono');
+        iconEl.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+    }
+}
+
+// ──────────────────────────────────────────────
+//  Modal（新增/編輯）
+// ──────────────────────────────────────────────
+function openModal() {
+    document.getElementById('modal').style.display = 'flex';
+    updateSubOptions();
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    editingId = null;
+    document.getElementById('modalTitle').textContent = '記下一筆密碼';
+    ['fSite','fUrl','fUser','fPass','fNote'].forEach(id => document.getElementById(id).value = '');
+    updateStrength();
+}
+
+async function saveEntry() {
+    const data = {
+        id: editingId || Date.now().toString(),
+        parent: document.getElementById('fParent').value,
+        sub: document.getElementById('fSub').value,
+        site: document.getElementById('fSite').value.trim(),
+        url: document.getElementById('fUrl').value.trim(),
+        user: document.getElementById('fUser').value.trim(),
+        pass: document.getElementById('fPass').value.trim(),
+        note: document.getElementById('fNote').value.trim()
+    };
+
+    if (!data.site || !data.user || !data.pass) return showToast('請填寫必填欄位');
+
+    if (editingId) {
+        const idx = entries.findIndex(e => String(e.id) === String(editingId));
+        entries[idx] = data;
+    } else {
+        entries.push(data);
+    }
+
+    await saveEntries();
+    closeModal();
+    render();
+    showToast('存檔成功');
+}
+
+function editEntry(id) {
+    const e = entries.find(x => String(x.id) === String(id));
+    if (!e) return;
+    editingId = String(id);
+    document.getElementById('fParent').value = e.parent;
+    updateSubOptions();
+    document.getElementById('fSub').value = e.sub;
+    document.getElementById('fSite').value = e.site;
+    document.getElementById('fUrl').value = e.url || '';
+    document.getElementById('fUser').value = e.user;
+    document.getElementById('fPass').value = e.pass;
+    document.getElementById('fNote').value = e.note || '';
+    document.getElementById('modalTitle').textContent = '修改紀錄';
+    document.getElementById('modal').style.display = 'flex';
+    updateStrength();
+}
+
+// ──────────────────────────────────────────────
+//  自訂刪除確認
+// ──────────────────────────────────────────────
+function openConfirm(id, siteName) {
+    pendingDeleteId = id;
+    const msg = document.getElementById('confirmMsg');
+    safeText(msg, `「${siteName}」的紀錄將永久移除`);
+
+    const sheet = document.getElementById('confirmSheet');
+    const bg = document.getElementById('overlayBg');
+    sheet.classList.remove('hidden');
+    bg.classList.remove('hidden');
+    requestAnimationFrame(() => sheet.classList.remove('hidden-sheet'));
+
+    document.getElementById('confirmBtn').onclick = () => doDelete();
+}
+
+function closeConfirm() {
+    const sheet = document.getElementById('confirmSheet');
+    const bg = document.getElementById('overlayBg');
+    sheet.classList.add('hidden-sheet');
+    setTimeout(() => {
+        sheet.classList.add('hidden');
+        bg.classList.add('hidden');
+    }, 300);
+    pendingDeleteId = null;
+}
+
+async function doDelete() {
+    if (!pendingDeleteId) return;
+    entries = entries.filter(x => String(x.id) !== String(pendingDeleteId));
+    await saveEntries();
+    render();
+    showToast('已刪除');
+    closeConfirm();
+}
+
+// ──────────────────────────────────────────────
+//  複製（Clipboard API）
+// ──────────────────────────────────────────────
+async function copyText(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch(e) {
+        // 降級處理
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.style.position = 'fixed';
+        el.style.opacity = '0';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+    showToast('已複製到剪貼簿');
+}
+
+// ──────────────────────────────────────────────
+//  Toast
+// ──────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.opacity = '1';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.style.opacity = '0', 2000);
+}
+
+// ──────────────────────────────────────────────
+//  匯出 / 匯入（明文備份，提示使用者妥善保存）
+// ──────────────────────────────────────────────
+function exportJSON() {
+    const a = document.createElement('a');
+    const dataStr = JSON.stringify(entries, null, 2);
+    a.href = URL.createObjectURL(new Blob([dataStr], {type: "application/json"}));
+    a.download = `vault_backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    showToast('備份已導出（請妥善保存）');
+}
+
+function importJSON(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+        try {
+            const imported = JSON.parse(ev.target.result);
+            if (!Array.isArray(imported)) throw new Error('格式錯誤');
+
+            // 合併匯入：以 id 去重，新資料優先
+            const existingIds = new Set(entries.map(x => x.id));
+            let merged = 0;
+            imported.forEach(item => {
+                if (!existingIds.has(item.id)) {
+                    entries.push(item);
+                    merged++;
                 }
-            };
-            reader.readAsText(file);
-            e.target.value = '';
-        }
+            });
 
-        renderSubFilterBar();
-        render();
-    </script>
+            if (merged === 0) {
+                showToast('無新資料需要合併');
+            } else {
+                await saveEntries();
+                render();
+                showToast(`已合併 ${merged} 筆新資料`);
+            }
+        } catch (err) {
+            showToast('檔案格式錯誤');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+// ──────────────────────────────────────────────
+//  初始化
+// ──────────────────────────────────────────────
+init();
+</script>
+```
+
 </body>
 </html>
-
